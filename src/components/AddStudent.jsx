@@ -27,27 +27,43 @@ function AddStudent() {
 
     const handleAddSubject = (semesterIndex) => {
         const updatedSemesterData = [...formData.semesterData];
+        const newSubject = { sem: semesterIndex + 1 };
         updatedSemesterData[semesterIndex] = updatedSemesterData[semesterIndex]
-            ? [...updatedSemesterData[semesterIndex], { subject: '', marks: '', maxMarks: '' }]
-            : [{ subject: '', marks: '', maxMarks: '' }];
+            ? updatedSemesterData[semesterIndex].concat(newSubject)
+            : [newSubject];
         setFormData({ ...formData, semesterData: updatedSemesterData });
     };
 
     const handleSubjectChange = (semesterIndex, subjectIndex) => (e) => {
         const updatedSemesterData = [...formData.semesterData];
-        console.log(updatedSemesterData[semesterIndex])
-        console.log(updatedSemesterData[semesterIndex][subjectIndex])
-        updatedSemesterData[semesterIndex][subjectIndex][e.target.name.slice(-1)] = e.target.value;
+        updatedSemesterData[semesterIndex][subjectIndex][e.target.name] = e.target.value;
         setFormData({ ...formData, semesterData: updatedSemesterData });
+        console.log(updatedSemesterData)
     };
 
     const calculateSemesterStats = (semesterData) => {
-        const totalMarks = semesterData.reduce((total, subject) => total + parseInt(subject.marks || 0), 0);
-        const maxMarks = semesterData.reduce((total, subject) => total + parseInt(subject.maxMarks || 0), 0);
+        let totalMarks = 0;
+        let maxMarks = 0;
+        console.log(semesterData, 'semesterData')
+        for (const sem of semesterData) {
+            for (const subjectKey in sem) {
+                if (subjectKey.startsWith("marks")) {
+                    const subjectIndex = parseInt(subjectKey.slice(5));
+                    totalMarks += parseInt(sem[subjectKey] || 0);
+
+                    const maxMarksKey = `max${subjectIndex}`;
+                    if (maxMarksKey in sem) {
+                        maxMarks += parseInt(sem[maxMarksKey] || 0);
+                    }
+                }
+            }
+        }
+
         const percentage = maxMarks === 0 ? 0 : (totalMarks / maxMarks) * 100;
         const grade = calculateGrade(percentage);
         return { totalMarks, percentage, grade };
     };
+
 
     const calculateGrade = (percentage) => {
         if (percentage >= 90) return 'A+';
@@ -69,14 +85,14 @@ function AddStudent() {
             const subjectFields = semesterData.map((subject, subjectIndex) => (
                 <div key={subjectIndex}>
                     <TextField
-                        name={`semester${i + 1}Subject${subjectIndex + 1}`}
+                        name={`subject${subjectIndex + 1}`}
                         label={`Subject ${subjectIndex + 1}`}
                         variant="outlined"
                         onChange={handleSubjectChange(i, subjectIndex)}
                         required
                     />
                     <TextField
-                        name={`semester${i + 1}MaxMarks${subjectIndex + 1}`}
+                        name={`max${subjectIndex + 1}`}
                         label="Maximum Marks"
                         type="number"
                         variant="outlined"
@@ -84,7 +100,7 @@ function AddStudent() {
                         required
                     />
                     <TextField
-                        name={`semester${i + 1}Marks${subjectIndex + 1}`}
+                        name={`marks${subjectIndex + 1}`}
                         label="Marks Scored"
                         type="number"
                         variant="outlined"
