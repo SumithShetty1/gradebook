@@ -4,8 +4,6 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 
-
-
 function Home() {
   return (
     <div className='Home'>
