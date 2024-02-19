@@ -1,43 +1,68 @@
-import React, { useState, useEffect } from 'react'
-import './Forms.css'
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import './Forms.css';
+import { useNavigate } from 'react-router-dom';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 export default function ViewStudent() {
-
   const [course, setCourse] = useState('');
   const [regno, setRegno] = useState('');
-
   const [data, setData] = useState([]);
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const Alldata = JSON.parse(localStorage.getItem('Student'))
-    setData(Alldata)
-  }, [])
-
-  console.log(data)
+    const allData = JSON.parse(localStorage.getItem('Student'));
+    setData(allData);
+  }, []);
 
   const handleSubmit = (e) => {
-    data.map(value => {
-      console.log(value.name)
-      if ((course === value.course && regno === value.regno)) {
-        navigate('/studentinfo', { state: { course, regno } })
-      } else {
-        alert("Invalid course or Register Number")
-      }
-    })
-  }
+    e.preventDefault();
+    const filteredData = data.filter(item => item.course === course && item.regno === regno);
+    if (filteredData.length > 0) {
+      navigate('/studentinfo', { state: { formData: filteredData[0] } });
+    } else {
+      alert("Invalid course or Register Number");
+    }
+  };
 
   return (
     <div className="App">
       <div className="form-div">
         <form onSubmit={handleSubmit}>
-          <input className='form-input' type="text" placeholder='Enter Course' value={course} onChange={(e) => setCourse(e.target.value)} />
-          <input className='form-input' type="text" placeholder='Enter Register Number' value={regno} onChange={(e) => setRegno(e.target.value)} />
-          <button className='form-button' type="submit">Login</button>
+          <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+            <InputLabel id="course-label">Course</InputLabel>
+            <Select
+              labelId="course-label"
+              name="course"
+              value={course}
+              onChange={(e) => setCourse(e.target.value)}
+              label="Course"
+              className='form-input'
+              required
+            >
+              <MenuItem value="">Select Course</MenuItem>
+              <MenuItem value="Bachelor's in Computer Applications">Bachelor's in Computer Applications</MenuItem>
+              <MenuItem value="Bachelor's in Computer Science">Bachelor's in Computer Science</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            name="regno"
+            label="Register No"
+            variant="outlined"
+            value={regno}
+            onChange={(e) => setRegno(e.target.value)}
+            className='form-input'
+            required
+          />
+          <div className='div-btn'>
+            <Button type="submit" className='form-button' variant="contained">Submit</Button>
+          </div>
         </form>
       </div>
     </div>
   );
-};
+}

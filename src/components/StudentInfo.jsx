@@ -81,9 +81,9 @@ function StudentInfo() {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Subject</TableCell>
-                    <TableCell>Maximum Marks</TableCell>
-                    <TableCell>Marks Scored</TableCell>
+                    <TableCell><b>Subject</b></TableCell>
+                    <TableCell><b>Maximum Marks</b></TableCell>
+                    <TableCell><b>Marks Scored</b></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

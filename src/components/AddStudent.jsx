@@ -13,7 +13,7 @@ function AddStudent() {
         course: '',
         regno: '',
         tsem: '',
-        csem: '',
+        csem: '1',
         semesterData: [],
     });
 
@@ -47,15 +47,15 @@ function AddStudent() {
 
     const handleSubjectChange = (semesterIndex, subjectIndex) => (e) => {
         const updatedSemesterData = [...formData.semesterData];
+        updatedSemesterData[semesterIndex] = updatedSemesterData[semesterIndex] || [];
+        updatedSemesterData[semesterIndex][subjectIndex] = updatedSemesterData[semesterIndex][subjectIndex] || {};
         updatedSemesterData[semesterIndex][subjectIndex][e.target.name] = e.target.value;
         setFormData({ ...formData, semesterData: updatedSemesterData });
-        console.log(updatedSemesterData)
     };
 
     const calculateSemesterStats = (semesterData) => {
         let totalMarks = 0;
         let maxMarks = 0;
-        console.log(semesterData, 'semesterData')
         for (const sem of semesterData) {
             for (const subjectKey in sem) {
                 if (subjectKey.startsWith("marks")) {
@@ -70,7 +70,7 @@ function AddStudent() {
             }
         }
 
-        const percentage = maxMarks === 0 ? 0:(totalMarks / maxMarks) * 100;
+        const percentage = maxMarks === 0 ? 0 : (totalMarks / maxMarks) * 100;
         const grade = calculateGrade(percentage);
         return { totalMarks, maxMarks, percentage, grade };
     };
@@ -91,7 +91,7 @@ function AddStudent() {
         const fields = [];
 
         for (let i = 0; i < semesterCount; i++) {
-            const semesterData = formData.semesterData[i] || [];
+            const semesterData = formData.semesterData[i] || [{ subject1: '', max1: '', marks1: '' }];
             const { totalMarks, maxMarks, percentage, grade } = calculateSemesterStats(semesterData);
             const subjectFields = semesterData.map((subject, subjectIndex) => (
                 <div key={subjectIndex}>
@@ -148,10 +148,46 @@ function AddStudent() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const newData = [...data, formData];
-        setData(newData);
-        localStorage.setItem('Student', JSON.stringify(newData));
-        navigate('/studentinfo', { state: { formData: formData } });
+
+        if (formData.csem === '0') {
+            alert('Current Semester cannot be 0');
+            return;
+        }
+
+        if (parseInt(formData.csem) > parseInt(formData.tsem)) {
+            alert('Current Semester cannot be greater than Total Semester');
+            return;
+        }
+
+        let isDuplicate = false;
+        for (const item of data) {
+            if (item.regno === formData.regno && item.course === formData.course) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        if (isDuplicate) {
+            alert('Student with the same register number and course already exists!');
+        } else {
+            for (const semesterData of formData.semesterData) {
+                for (const subject of semesterData) {
+                    for (let i = 1; i <= Object.keys(subject).length / 3; i++) {
+                        const marksScored = parseInt(subject[`marks${i}`]) || 0;
+                        const maxMarks = parseInt(subject[`max${i}`]) || 0;
+                        if (marksScored > maxMarks) {
+                            alert('Marks Scored cannot be greater than Maximum Marks');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            const newData = [...data, formData];
+            setData(newData);
+            localStorage.setItem('Student', JSON.stringify(newData));
+            navigate('/studentinfo', { state: { formData: formData } });
+        }
     };
 
     return (
