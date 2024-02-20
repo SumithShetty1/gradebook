@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Select from '@mui/material/Select';
+import '../styles/Forms.css';
+import { useNavigate, useLocation } from 'react-router-dom';
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Header from './Header';
 
 function AddStudent() {
-    const [formData, setFormData] = useState({
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const initialFormData = location.state ? location.state.formData : {
         name: '',
         course: '',
         regno: '',
         tsem: '',
         csem: '1',
         semesterData: [],
-    });
+    };
 
+    const [formData, setFormData] = useState(initialFormData);
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -32,16 +38,10 @@ function AddStudent() {
 
     const handleAddSubject = (semesterIndex) => {
         const updatedSemesterData = [...formData.semesterData];
-        const newSubject = { sem: semesterIndex + 1 };
+        const newSubject = { subject: '', max: '', marks: '' };
         updatedSemesterData[semesterIndex] = updatedSemesterData[semesterIndex]
             ? updatedSemesterData[semesterIndex].concat(newSubject)
             : [newSubject];
-        setFormData({ ...formData, semesterData: updatedSemesterData });
-    };
-
-    const handleRemoveSubject = (semesterIndex, subjectIndex) => {
-        const updatedSemesterData = [...formData.semesterData];
-        updatedSemesterData[semesterIndex].splice(subjectIndex, 1);
         setFormData({ ...formData, semesterData: updatedSemesterData });
     };
 
@@ -57,24 +57,14 @@ function AddStudent() {
         let totalMarks = 0;
         let maxMarks = 0;
         for (const sem of semesterData) {
-            for (const subjectKey in sem) {
-                if (subjectKey.startsWith("marks")) {
-                    const subjectIndex = parseInt(subjectKey.slice(5));
-                    totalMarks += parseInt(sem[subjectKey] || 0);
-
-                    const maxMarksKey = `max${subjectIndex}`;
-                    if (maxMarksKey in sem) {
-                        maxMarks += parseInt(sem[maxMarksKey] || 0);
-                    }
-                }
-            }
+            totalMarks += parseInt(sem.marks || 0);
+            maxMarks += parseInt(sem.max || 0);
         }
 
         const percentage = maxMarks === 0 ? 0 : (totalMarks / maxMarks) * 100;
         const grade = calculateGrade(percentage);
         return { totalMarks, maxMarks, percentage, grade };
     };
-
 
     const calculateGrade = (percentage) => {
         if (percentage >= 90) return 'A+';
@@ -90,34 +80,44 @@ function AddStudent() {
         const semesterCount = parseInt(formData.csem);
         const fields = [];
 
+        const handleRemoveSubject = (semesterIndex, subjectIndex) => {
+            const updatedSemesterData = [...formData.semesterData];
+            updatedSemesterData[semesterIndex].splice(subjectIndex, 1);
+            setFormData({ ...formData, semesterData: updatedSemesterData });
+        };
+
         for (let i = 0; i < semesterCount; i++) {
-            const semesterData = formData.semesterData[i] || [{ subject1: '', max1: '', marks1: '' }];
+            const semesterData = formData.semesterData[i] || [{ subject: '', max: '', marks: '' }];
             const { totalMarks, maxMarks, percentage, grade } = calculateSemesterStats(semesterData);
             const subjectFields = semesterData.map((subject, subjectIndex) => (
                 <div key={subjectIndex}>
                     <TextField
-                        name={`subject${subjectIndex + 1}`}
-                        label={`Subject ${subjectIndex + 1}`}
+                        name="subject"
+                        label="Subject"
                         variant="outlined"
+                        value={subject.subject}
                         onChange={handleSubjectChange(i, subjectIndex)}
                         required
                     />
                     <TextField
-                        name={`max${subjectIndex + 1}`}
+                        name="max"
                         label="Maximum Marks"
                         type="number"
                         variant="outlined"
+                        value={subject.max}
                         onChange={handleSubjectChange(i, subjectIndex)}
                         required
                     />
                     <TextField
-                        name={`marks${subjectIndex + 1}`}
+                        name="marks"
                         label="Marks Scored"
                         type="number"
                         variant="outlined"
+                        value={subject.marks}
                         onChange={handleSubjectChange(i, subjectIndex)}
                         required
                     />
+                    <Button variant="contained" color="error" onClick={() => handleRemoveSubject(i, subjectIndex)}>Remove</Button>
                 </div>
             ));
 
@@ -128,9 +128,6 @@ function AddStudent() {
                     <div style={{ display: 'flex' }}>
                         <div>
                             <Button variant="contained" onClick={() => handleAddSubject(i)}>Add Subject</Button>
-                        </div>
-                        <div>
-                            <Button variant="contained" color="error" onClick={() => handleRemoveSubject(i)}>Remove Subject</Button>
                         </div>
                     </div>
                     <p><b>Total Marks:</b> {totalMarks}</p>
@@ -143,8 +140,6 @@ function AddStudent() {
 
         return fields;
     };
-
-    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -172,26 +167,36 @@ function AddStudent() {
         } else {
             for (const semesterData of formData.semesterData) {
                 for (const subject of semesterData) {
-                    for (let i = 1; i <= Object.keys(subject).length / 3; i++) {
-                        const marksScored = parseInt(subject[`marks${i}`]) || 0;
-                        const maxMarks = parseInt(subject[`max${i}`]) || 0;
-                        if (marksScored > maxMarks) {
-                            alert('Marks Scored cannot be greater than Maximum Marks');
-                            return;
-                        }
+                    const marksScored = parseInt(subject.marks) || 0;
+                    const maxMarks = parseInt(subject.max) || 0;
+                    if (marksScored > maxMarks) {
+                        alert('Marks Scored cannot be greater than Maximum Marks');
+                        return;
                     }
                 }
             }
 
-            const newData = [...data, formData];
-            setData(newData);
-            localStorage.setItem('Student', JSON.stringify(newData));
+            if (location.state) {
+                const updatedData = data.map(item => {
+                    if (item.regno === formData.regno && item.course === formData.course) {
+                        return formData;
+                    }
+                    return item;
+                });
+                setData(updatedData);
+                localStorage.setItem('Student', JSON.stringify(updatedData));
+            } else {
+                const newData = [...data, formData];
+                setData(newData);
+                localStorage.setItem('Student', JSON.stringify(newData));
+            }
             navigate('/studentinfo', { state: { formData: formData } });
         }
     };
 
     return (
         <div>
+            <Header />
             <h2>Add New Student Details</h2>
             <form onSubmit={handleSubmit}>
                 {/* Basic student details */}

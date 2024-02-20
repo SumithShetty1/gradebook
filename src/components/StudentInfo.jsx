@@ -8,32 +8,27 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Header from './Header';
 
 function StudentInfo() {
   const location = useLocation();
   const formData = location.state.formData;
   const navigate = useNavigate();
 
-  function calculateSemesterStats(semester) {
+  const calculateSemesterStats = (semesterData) => {
     let totalMarks = 0;
     let maxMarks = 0;
+    for (const sem of semesterData) {
+      totalMarks += parseInt(sem.marks || 0);
+      maxMarks += parseInt(sem.max || 0);
+    }
 
-    semester.forEach(subject => {
-      Object.keys(subject).forEach(key => {
-        if (key.startsWith('marks')) {
-          totalMarks += parseInt(subject[key]) || 0;
-        } else if (key.startsWith('max')) {
-          maxMarks += parseInt(subject[key]) || 0;
-        }
-      });
-    });
-
-    const percentage = (totalMarks / maxMarks) * 100;
+    const percentage = maxMarks === 0 ? 0 : (totalMarks / maxMarks) * 100;
     const grade = calculateGrade(percentage);
     return { totalMarks, maxMarks, percentage, grade };
-  }
+  };
 
-  function calculateGrade(percentage) {
+  const calculateGrade = (percentage) => {
     if (percentage >= 90) return 'A+';
     if (percentage >= 80) return 'A';
     if (percentage >= 70) return 'B+';
@@ -41,7 +36,7 @@ function StudentInfo() {
     if (percentage >= 50) return 'C';
     if (percentage >= 40) return 'D';
     return 'F';
-  }
+  };
 
   let grandTotalMarks = 0;
   let grandMaxMarks = 0;
@@ -59,6 +54,7 @@ function StudentInfo() {
 
   return (
     <div>
+      <Header></Header>
       <h1>Student Information</h1>
       <div style={{ display: 'flex', gap: '20%' }}>
         <div>
@@ -89,9 +85,9 @@ function StudentInfo() {
                 <TableBody>
                   {semester.map((subject, subjectIndex) => (
                     <TableRow key={subjectIndex}>
-                      <TableCell>{subject[`subject${subjectIndex + 1}`]}</TableCell>
-                      <TableCell>{subject[`max${subjectIndex + 1}`]}</TableCell>
-                      <TableCell>{subject[`marks${subjectIndex + 1}`]}</TableCell>
+                      <TableCell>{subject['subject']}</TableCell>
+                      <TableCell>{subject['max']}</TableCell>
+                      <TableCell>{subject['marks']}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -121,7 +117,7 @@ function StudentInfo() {
           </div>
         </div>
       )}
-      <Button variant="contained" onClick={()=>navigate('/')}>Back</Button>
+      <Button variant="contained" onClick={() => navigate('/')}>Back</Button>
     </div>
   );
 }

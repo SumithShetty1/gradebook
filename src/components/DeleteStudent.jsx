@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Header from './Header';
 
-export default function ViewStudent() {
+export default function DeleteStudent() {
   const [course, setCourse] = useState('');
   const [regno, setRegno] = useState('');
   const [data, setData] = useState([]);
@@ -24,7 +24,11 @@ export default function ViewStudent() {
     e.preventDefault();
     const filteredData = data.filter(item => item.course === course && item.regno === regno);
     if (filteredData.length > 0) {
-      navigate('/studentinfo', { state: { formData: filteredData[0] } });
+      const updatedData = data.filter(item => !(item.course === course && item.regno === regno));
+      localStorage.setItem('Student', JSON.stringify(updatedData));
+      setData(updatedData);
+      alert('Student details removed successfully!');
+      navigate('/')
     } else {
       alert("Invalid course or Register Number");
     }
@@ -32,7 +36,7 @@ export default function ViewStudent() {
 
   return (
     <div className="App">
-      <Header />
+      <Header></Header>
       <div className="form-div">
         <form onSubmit={handleSubmit}>
           <FormControl variant="outlined" sx={{ minWidth: 120 }}>
