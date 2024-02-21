@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Forms.css';
+import '../styles/AddStudent.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -45,6 +45,18 @@ function AddStudent() {
         setFormData({ ...formData, semesterData: updatedSemesterData });
     };
 
+    const handleRemoveSubject = (semesterIndex, subjectIndex) => {
+        const updatedSemesterData = [...formData.semesterData];
+        if (!updatedSemesterData[semesterIndex] || updatedSemesterData[semesterIndex].length === 0) {
+            alert('No subjects to remove');
+        } else if (updatedSemesterData[semesterIndex].length === 1) {
+            alert('Cannot remove the only subject in the semester');
+        } else {
+            updatedSemesterData[semesterIndex].splice(subjectIndex, 1);
+            setFormData({ ...formData, semesterData: updatedSemesterData });
+        }
+    };
+
     const handleSubjectChange = (semesterIndex, subjectIndex) => (e) => {
         const updatedSemesterData = [...formData.semesterData];
         updatedSemesterData[semesterIndex] = updatedSemesterData[semesterIndex] || [];
@@ -79,12 +91,6 @@ function AddStudent() {
     const renderFields = () => {
         const semesterCount = parseInt(formData.csem);
         const fields = [];
-
-        const handleRemoveSubject = (semesterIndex, subjectIndex) => {
-            const updatedSemesterData = [...formData.semesterData];
-            updatedSemesterData[semesterIndex].splice(subjectIndex, 1);
-            setFormData({ ...formData, semesterData: updatedSemesterData });
-        };
 
         for (let i = 0; i < semesterCount; i++) {
             const semesterData = formData.semesterData[i] || [{ subject: '', max: '', marks: '' }];
@@ -123,7 +129,7 @@ function AddStudent() {
 
             fields.push(
                 <div key={i}>
-                    <h3>Semester {i + 1}</h3>
+                    <h2 className='App'>Semester {i + 1}</h2>
                     {subjectFields}
                     <div style={{ display: 'flex' }}>
                         <div>
@@ -197,28 +203,35 @@ function AddStudent() {
     return (
         <div>
             <Header />
-            <h2>Add New Student Details</h2>
+            <h1 className='App'>Add New Student Details</h1>
             <form onSubmit={handleSubmit}>
                 {/* Basic student details */}
-                <TextField name="name" label="Name" variant="outlined" value={formData.name} onChange={handleChange} required />
+                <div style={{ display: 'flex', gap: '25%', marginBottom: '15px' }}>
+                    <TextField className="input-field" name="name" label="Name" variant="outlined" value={formData.name} onChange={handleChange} required />
+                    <TextField className="input-field" name="regno" label="Register No" variant="outlined" value={formData.regno} onChange={handleChange} required />
+                </div>
+                <div style={{ display: 'flex', gap: '25%', marginBottom: '15px' }}>
                 <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-                    <InputLabel id="course-label">Course</InputLabel>
-                    <Select
-                        labelId="course-label"
-                        name="course"
-                        value={formData.course}
-                        onChange={handleChange}
-                        label="Course"
-                        required
-                    >
-                        <MenuItem value="">Select Course</MenuItem>
-                        <MenuItem value="Bachelor's in Computer Applications">Bachelor's in Computer Applications</MenuItem>
-                        <MenuItem value="Bachelor's in Computer Science">Bachelor's in Computer Science</MenuItem>
-                    </Select>
-                </FormControl>
-                <TextField name="regno" label="Register No" variant="outlined" value={formData.regno} onChange={handleChange} required />
-                <TextField name="tsem" label="Total Semesters" type="number" variant="outlined" value={formData.tsem} onChange={handleChange} required />
-                <TextField name="csem" label="Current Semester" type="number" variant="outlined" value={formData.csem} onChange={handleChange} required />
+                        <InputLabel id="course-label">Course</InputLabel>
+                        <Select
+                            className="input-field"
+                            labelId="course-label"
+                            name="course"
+                            value={formData.course}
+                            onChange={handleChange}
+                            label="Course"
+                            required
+                        >
+                            <MenuItem value="">Select Course</MenuItem>
+                            <MenuItem value="Bachelor's in Computer Applications">Bachelor's in Computer Applications</MenuItem>
+                            <MenuItem value="Bachelor's in Computer Science">Bachelor's in Computer Science</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <TextField className="input-field" name="tsem" label="Total Semesters" type="number" variant="outlined" value={formData.tsem} onChange={handleChange} required />
+                </div>
+                <div style={{ marginBottom: '15px' }}>
+                <TextField className="input-field" name="csem" label="Current Semester" type="number" variant="outlined" value={formData.csem} onChange={handleChange} required />
+                </div>
 
                 {/* Semester-wise subject input fields */}
                 {renderFields()}

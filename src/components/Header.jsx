@@ -1,6 +1,6 @@
 import React from 'react'
-import logo from '../logo.svg'
-import '../styles/Home.css';
+import logo from '../logo.jpg'
+import '../styles/Header.css';
 import { Link } from 'react-router-dom';
 
 function Header() {
@@ -8,7 +8,7 @@ function Header() {
         <header>
             {/* Link to home */}
             <Link to="/">
-                <img src={logo} alt="logo" width={90} />
+                <img src={logo} alt="logo" width={70} />
             </Link>
             <nav>
                 <ul>

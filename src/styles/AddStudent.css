@@ -1,0 +1,18 @@
+h1 {
+    padding: 20px 0;
+}
+
+h2 {
+    padding: 10px 0;
+    font-size: 30px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20%;
+}
+
+.input-field {
+    width: 340px;
+}
