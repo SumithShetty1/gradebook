@@ -14,5 +14,11 @@ form {
 }
 
 .input-field {
-    width: 340px;
+    width: 290px;
+}
+
+.subject{
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
 }

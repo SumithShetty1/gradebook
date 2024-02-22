@@ -1,8 +1,27 @@
 .title{
     text-align: center;
-    background-image: linear-gradient(to bottom, blue,rgb(6, 149, 216));
-    width: 100%;
+    background-image: linear-gradient(to bottom, black,rgba(255, 255, 255, 0.5));
+    width: 99%;
     font-size: 250%;
     margin-top: 0%;
     padding: 1%;
+}
+
+.btns-field{
+    display: flex;
+    gap: 50px;
+    text-align: center;
+    justify-content: center;
+}
+
+.btn{
+    margin: 15px;
+    height: 100px;
+    display: flex;
+    gap: 20px;
+    width: 370px;
+}
+
+.icns{
+    font-size: large;
 }

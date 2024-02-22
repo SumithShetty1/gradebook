@@ -55,69 +55,73 @@ function StudentInfo() {
   return (
     <div>
       <Header></Header>
-      <h1>Student Information</h1>
-      <div style={{ display: 'flex', gap: '20%' }}>
-        <div>
-          <p><b>Name:</b> {formData.name}</p>
-          <p><b>Course:</b> {formData.course}</p>
-          <p><b>Register No:</b> {formData.regno}</p>
+      <div style={{ margin: '0 10% 5% 10%' }}>
+        <h1 style={{ textAlign: 'center', fontSize: '2.5em' }}>Student Information</h1>
+        <div style={{ display: 'flex', gap: '20%' }}>
+          <div>
+            <p><b>Name:</b> {formData.name}</p>
+            <p><b>Course:</b> {formData.course}</p>
+            <p><b>Register No:</b> {formData.regno}</p>
+          </div>
+          <div>
+            <p><b>Total Semesters:</b> {formData.tsem}</p>
+            <p><b>Current Semester:</b> {formData.csem}</p>
+          </div>
         </div>
-        <div>
-          <p><b>Total Semesters:</b> {formData.tsem}</p>
-          <p><b>Current Semester:</b> {formData.csem}</p>
+        {formData.semesterData.map((semester, semesterIndex) => {
+          const { totalMarks, maxMarks, percentage, grade } = semesterInfo[semesterIndex];
+
+          return (
+            <div key={semesterIndex}>
+              <h2>Semester {semesterIndex + 1}</h2>
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell><b>Subject</b></TableCell>
+                      <TableCell><b>Maximum Marks</b></TableCell>
+                      <TableCell><b>Marks Scored</b></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {semester.map((subject, subjectIndex) => (
+                      <TableRow key={subjectIndex}>
+                        <TableCell>{subject['subject']}</TableCell>
+                        <TableCell>{subject['max']}</TableCell>
+                        <TableCell>{subject['marks']}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <div style={{ display: 'flex', gap: '16%' }}>
+                <p><b>Total Marks:</b> {totalMarks}</p>
+                <p><b>Maximum Marks:</b> {maxMarks}</p>
+                <p><b>Percentage:</b> {percentage.toFixed(2)}%</p>
+                <p><b>Grade:</b> {grade}</p>
+              </div>
+            </div>
+          );
+        })}
+        {formData.semesterData.length > 1 && (
+          <div>
+            <h2>Grand Total</h2>
+            <div style={{ display: 'flex', gap: '50%' }}>
+              <div>
+                <p><b>Total Marks:</b> {grandTotalMarks}</p>
+                <p><b>Maximum Marks:</b> {grandMaxMarks}</p>
+              </div>
+              <div>
+                <p><b>Percentage:</b> {grandPercentage.toFixed(2)}%</p>
+                <p><b>Grade:</b> {grandGrade}</p>
+              </div>
+            </div>
+          </div>
+        )}
+        <div style={{ textAlign: 'center', marginTop: '5%' }}>
+\          <Button variant="contained" onClick={() => navigate('/')}>Back</Button>
         </div>
       </div>
-      {formData.semesterData.map((semester, semesterIndex) => {
-        const { totalMarks, maxMarks, percentage, grade } = semesterInfo[semesterIndex];
-
-        return (
-          <div key={semesterIndex}>
-            <h2>Semester {semesterIndex + 1}</h2>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell><b>Subject</b></TableCell>
-                    <TableCell><b>Maximum Marks</b></TableCell>
-                    <TableCell><b>Marks Scored</b></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {semester.map((subject, subjectIndex) => (
-                    <TableRow key={subjectIndex}>
-                      <TableCell>{subject['subject']}</TableCell>
-                      <TableCell>{subject['max']}</TableCell>
-                      <TableCell>{subject['marks']}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <div style={{ display: 'flex', gap: '16%' }}>
-              <p><b>Total Marks:</b> {totalMarks}</p>
-              <p><b>Maximum Marks:</b> {maxMarks}</p>
-              <p><b>Percentage:</b> {percentage.toFixed(2)}%</p>
-              <p><b>Grade:</b> {grade}</p>
-            </div>
-          </div>
-        );
-      })}
-      {formData.semesterData.length > 1 && (
-        <div>
-          <h2>Grand Total</h2>
-          <div style={{ display: 'flex', gap: '50%' }}>
-            <div>
-              <p><b>Total Marks:</b> {grandTotalMarks}</p>
-              <p><b>Maximum Marks:</b> {grandMaxMarks}</p>
-            </div>
-            <div>
-              <p><b>Percentage:</b> {grandPercentage.toFixed(2)}%</p>
-              <p><b>Grade:</b> {grandGrade}</p>
-            </div>
-          </div>
-        </div>
-      )}
-      <Button variant="contained" onClick={() => navigate('/')}>Back</Button>
     </div>
   );
 }

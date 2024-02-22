@@ -96,7 +96,7 @@ function AddStudent() {
             const semesterData = formData.semesterData[i] || [{ subject: '', max: '', marks: '' }];
             const { totalMarks, maxMarks, percentage, grade } = calculateSemesterStats(semesterData);
             const subjectFields = semesterData.map((subject, subjectIndex) => (
-                <div key={subjectIndex}>
+                <div className='subject' key={subjectIndex}>
                     <TextField
                         name="subject"
                         label="Subject"
@@ -237,7 +237,7 @@ function AddStudent() {
                 {renderFields()}
 
                 {/* Submit button */}
-                <Button type="submit" variant="contained">Submit</Button>
+                <Button style={{margin:'15px 0 35px 0'}} type="submit" variant="contained">Submit</Button>
             </form>
         </div>
     );
