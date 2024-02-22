@@ -21,6 +21,11 @@ function App() {
           <Route exact path="/studentinfo" element={<StudentInfo/>} />
         </Routes>
       </BrowserRouter>
+      <footer>
+        <p className='phone'>+91 7612345678</p>
+        <p className='copyright'>© 2024 Student GradeBook. All rights reserved.</p>
+        <p className='gmail'>gradebook@gmail.com</p>
+      </footer>
     </div>
   );
 }

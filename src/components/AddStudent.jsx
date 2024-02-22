@@ -18,12 +18,13 @@ function AddStudent() {
         course: '',
         regno: '',
         tsem: '',
-        csem: '1',
+        csem: '',
         semesterData: [],
     };
 
     const [formData, setFormData] = useState(initialFormData);
     const [data, setData] = useState([]);
+    const [currentSemesterDisabled, setCurrentSemesterDisabled] = useState(true);
 
     useEffect(() => {
         const storedData = JSON.parse(localStorage.getItem('Student'));
@@ -33,7 +34,12 @@ function AddStudent() {
     }, []);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        if (name === 'tsem') {
+            setCurrentSemesterDisabled(value === '' || parseInt(value) === 0);
+        }
     };
 
     const handleAddSubject = (semesterIndex) => {
@@ -211,7 +217,7 @@ function AddStudent() {
                     <TextField className="input-field" name="regno" label="Register No" variant="outlined" value={formData.regno} onChange={handleChange} required />
                 </div>
                 <div style={{ display: 'flex', gap: '25%', marginBottom: '15px' }}>
-                <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+                    <FormControl variant="outlined" sx={{ minWidth: 120 }}>
                         <InputLabel id="course-label">Course</InputLabel>
                         <Select
                             className="input-field"
@@ -230,14 +236,14 @@ function AddStudent() {
                     <TextField className="input-field" name="tsem" label="Total Semesters" type="number" variant="outlined" value={formData.tsem} onChange={handleChange} required />
                 </div>
                 <div style={{ marginBottom: '15px' }}>
-                <TextField className="input-field" name="csem" label="Current Semester" type="number" variant="outlined" value={formData.csem} onChange={handleChange} required />
+                    <TextField className="input-field" name="csem" label="Current Semester" type="number" variant="outlined" value={formData.csem} onChange={handleChange} required disabled={currentSemesterDisabled} />
                 </div>
 
                 {/* Semester-wise subject input fields */}
                 {renderFields()}
 
                 {/* Submit button */}
-                <Button style={{margin:'15px 0 35px 0'}} type="submit" variant="contained">Submit</Button>
+                <Button style={{ margin: '15px 0 35px 0' }} type="submit" variant="contained">Submit</Button>
             </form>
         </div>
     );
