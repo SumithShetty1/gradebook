@@ -18,7 +18,7 @@ function AddStudent() {
         course: '',
         regno: '',
         tsem: '',
-        csem: '',
+        csem: '1',
         semesterData: [],
     };
 
@@ -35,6 +35,18 @@ function AddStudent() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        // Check if the entered value exceeds the limit (12)
+        if (name === 'tsem' || name === 'csem') {
+            const numericValue = parseInt(value);
+            if (numericValue > 12) {
+                alert('Semester count cannot exceed 12');
+                // Reset the value of the field
+                setFormData({ ...formData, [name]: '' });
+                return;
+            }
+        }
+
         setFormData({ ...formData, [name]: value });
 
         if (name === 'tsem') {
@@ -229,21 +241,53 @@ function AddStudent() {
                             required
                         >
                             <MenuItem value="">Select Course</MenuItem>
-                            <MenuItem value="Bachelor's in Computer Applications">Bachelor's in Computer Applications</MenuItem>
-                            <MenuItem value="Bachelor's in Computer Science">Bachelor's in Computer Science</MenuItem>
+                            {/* Undergraduate Courses */}
+                            <MenuItem value="Bachelor of Arts (BA)">Bachelor of Arts (BA)</MenuItem>
+                            <MenuItem value="Bachelor of Science (BSc)">Bachelor of Science (BSc)</MenuItem>
+                            <MenuItem value="Bachelor of Commerce (BCom)">Bachelor of Commerce (BCom)</MenuItem>
+                            <MenuItem value="Bachelor of Engineering (BE)">Bachelor of Engineering (BE)</MenuItem>
+                            <MenuItem value="Bachelor of Technology (BTech)">Bachelor of Technology (BTech)</MenuItem>
+                            <MenuItem value="Bachelor of Business Administration (BBA)">Bachelor of Business Administration (BBA)</MenuItem>
+                            <MenuItem value="Bachelor of Computer Applications (BCA)">Bachelor of Computer Applications (BCA)</MenuItem>
+                            <MenuItem value="Bachelor of Fine Arts (BFA)">Bachelor of Fine Arts (BFA)</MenuItem>
+                            <MenuItem value="Bachelor of Architecture (BArch)">Bachelor of Architecture (BArch)</MenuItem>
+                            <MenuItem value="Bachelor of Pharmacy (BPharm)">Bachelor of Pharmacy (BPharm)</MenuItem>
+                            <MenuItem value="Bachelor of Education (BEd)">Bachelor of Education (BEd)</MenuItem>
+                            <MenuItem value="Bachelor of Laws (LLB)">Bachelor of Laws (LLB)</MenuItem>
+                            <MenuItem value="Bachelor of Medicine, Bachelor of Surgery (MBBS)">Bachelor of Medicine, Bachelor of Surgery (MBBS)</MenuItem>
+                            <MenuItem value="Bachelor of Dental Surgery (BDS)">Bachelor of Dental Surgery (BDS)</MenuItem>
+                            <MenuItem value="Bachelor of Physiotherapy (BPT)">Bachelor of Physiotherapy (BPT)</MenuItem>
+                            {/* Postgraduate Courses */}
+                            <MenuItem value="Master of Arts (MA)">Master of Arts (MA)</MenuItem>
+                            <MenuItem value="Master of Science (MSc)">Master of Science (MSc)</MenuItem>
+                            <MenuItem value="Master of Commerce (MCom)">Master of Commerce (MCom)</MenuItem>
+                            <MenuItem value="Master of Engineering (ME)">Master of Engineering (ME)</MenuItem>
+                            <MenuItem value="Master of Technology (MTech)">Master of Technology (MTech)</MenuItem>
+                            <MenuItem value="Master of Business Administration (MBA)">Master of Business Administration (MBA)</MenuItem>
+                            <MenuItem value="Master of Computer Applications (MCA)">Master of Computer Applications (MCA)</MenuItem>
+                            <MenuItem value="Master of Fine Arts (MFA)">Master of Fine Arts (MFA)</MenuItem>
+                            <MenuItem value="Master of Architecture (MArch)">Master of Architecture (MArch)</MenuItem>
+                            <MenuItem value="Master of Pharmacy (MPharm)">Master of Pharmacy (MPharm)</MenuItem>
+                            <MenuItem value="Master of Education (MEd)">Master of Education (MEd)</MenuItem>
+                            <MenuItem value="Master of Laws (LLM)">Master of Laws (LLM)</MenuItem>
+                            <MenuItem value="Master of Medicine (MD)">Master of Medicine (MD)</MenuItem>
+                            <MenuItem value="Master of Surgery (MS)">Master of Surgery (MS)</MenuItem>
+                            <MenuItem value="Master of Physiotherapy (MPT)">Master of Physiotherapy (MPT)</MenuItem>
                         </Select>
                     </FormControl>
-                    <TextField className="input-field" name="tsem" label="Total Semesters" type="number" variant="outlined" value={formData.tsem} onChange={handleChange} required />
+                    <TextField className="input-field" name="tsem" label="Total Semesters" type="number" variant="outlined" value={formData.tsem} onChange={handleChange} required inputProps={{ max: 12 }} />
                 </div>
                 <div style={{ marginBottom: '15px' }}>
-                    <TextField className="input-field" name="csem" label="Current Semester" type="number" variant="outlined" value={formData.csem} onChange={handleChange} required disabled={currentSemesterDisabled} />
+                    <TextField className="input-field" name="csem" label="Current Semester" type="number" variant="outlined" value={formData.csem} onChange={handleChange} required inputProps={{ max: 12 }} disabled={currentSemesterDisabled} />
                 </div>
 
                 {/* Semester-wise subject input fields */}
                 {renderFields()}
 
                 {/* Submit button */}
-                <Button style={{ margin: '15px 0 35px 0' }} type="submit" variant="contained">Submit</Button>
+                <div style={{ textAlign: 'center' }}>
+                    <Button style={{ margin: '58px 0 35px 0', width: '100px' }} type="submit" variant="contained">Submit</Button>
+                </div>
             </form>
         </div>
     );

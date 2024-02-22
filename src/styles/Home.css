@@ -1,4 +1,4 @@
-.title{
+.title {
     text-align: center;
     font-size: 180%;
     padding-top: 150px;
@@ -8,7 +8,7 @@
     color: white;
 }
 
-.btns-field{
+.btns-field {
     display: flex;
     gap: 50px;
     text-align: center;
@@ -16,7 +16,7 @@
     margin: 50px 100px 0px 100px;
 }
 
-.btn{
+.btn {
     margin: 15px;
     height: 100px;
     display: flex;
@@ -24,7 +24,7 @@
     width: 370px;
 }
 
-.icns{
+.icns {
     font-size: 30px;
 }
 
@@ -37,6 +37,7 @@ footer {
     padding-right: 60px;
     color: white;
     background-color: black;
+    margin-top: 126px;
 }
 
 footer p {

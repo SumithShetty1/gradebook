@@ -119,7 +119,7 @@ function StudentInfo() {
           </div>
         )}
         <div style={{ textAlign: 'center', marginTop: '5%' }}>
-\          <Button variant="contained" onClick={() => navigate('/')}>Back</Button>
+          <Button variant="contained" onClick={() => navigate('/')}>Back</Button>
         </div>
       </div>
     </div>
